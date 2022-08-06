@@ -1,0 +1,183 @@
+Instructions générales
+- Pour l'ensemble du processus d'évaluation, si vous ne savez pas vérifier une exigence, ou vérifier quoi que ce soit, l'étudiant évalué doit vous aider. 
+
+- Assurez-vous que tous les fichiers nécessaires à la configuration de l'application se trouvent dans un dossier srcs.
+  Le dossier srcs doit être situé à la racine du référentiel. 
+
+- Assurez-vous qu'un Makefile est situé à la racine du référentiel. 
+
+- Avant de commencer l'évaluation, exécutez cette commande dans le terminal : 
+  " sudo docker stop $(sudo docker ps -qa); 
+    sudo docker rm $(sudo docker ps -qa);
+    sudo docker rmi -f $(sudo docker images -qa);
+    sudo docker volume rm $(sudo docker volume ls -q);
+    sudo docker network rm $(sudo docker network ls -q) 2>/dev/null"
+
+(Exécutez ensuite la commande 'sudo docker network ls' pour montrer que 3 reseau par defaut tourne encore sur la machine.)
+
+- Lire le fichier docker-compose.yml.
+  Il ne doit pas y avoir 'network: host' ou 'links:'.
+  Sinon, l'évaluation se termine maintenant.
+
+- Lisez le fichier docker-compose.yml.
+  Il doit y avoir 'network(s)' dedans.
+  Sinon, l'évaluation se termine maintenant. 
+
+- Examinez le Makefile et tous les scripts dans lesquels Docker est utilisé.
+  Il ne doit pas être '--link' dans l'un d'eux.
+  Sinon, l'évaluation se termine maintenant.
+
+- Examinez les Dockerfiles.
+  Si vous voyez 'tail -f' ou une commande exécutée en arrière-plan dans l'un d'eux dans la section ENTRYPOINT, l'évaluation se termine maintenant.
+  Même chose si 'bash' ou 'sh' sont utilisés mais pas pour exécuter un script (par exemple, 'nginx & bash' ou 'bash').
+
+- Si le point d'entrée est un script (par exemple, ENTRYPOINT ["sh", " my_entrypoint.sh"], ENTRYPOINT ["bash", "my_entrypoint.sh"]), assurez-vous qu'il n'exécute aucun programme en arrière-plan (par exemple, 'nginx & bash').
+
+- Examinez tous les scripts du référentiel.
+  Assurez-vous qu'aucun d'entre eux exécute une boucle infinie.
+  Voici quelques exemples d'interdiction commandes itées : 'sleep infinity', 'tail -f /dev/null', 'tail -f /dev/random'
+
+- Exécutez le Makefile.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+Partie obligatoire
+  Ce projet consiste à mettre en place une petite infrastructure composée de différents services à l'aide de docker-compose.
+  Assurez-vous que tous les points suivants sont corrects.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+Aperçu du projet
+- La personne évaluée doit vous expliquer en termes simples :
+
+- Comment fonctionnent Docker et docker-compose 
+        Docker est un outil qui vous permet de créer, déployer et lancer vos applications en utilisant des conteneurs.
+        Pour mettre en place ces conteneurs, on crée des images Docker.
+        L’image Docker permet de configurer tout l’environnement dans lequel le conteneur va s'exécuter.
+        Pour créer ces images, Docker utilise un fichier spécial appelé Dockerfile, qui grâce à une syntaxe simple et élégante va nous permettre de préparer nos images.
+        L’image est ensuite construite par le démon Docker via l’utilisation de commandes dans le terminal qui sont regroupées dans ce qu’on appelle un CLI.
+        Pour gérer l’ensemble des conteneurs d’une application, on utilise Docker Compose.
+
+- La différence entre une image Docker utilisée avec docker-compose et sans docker-compose 
+
+- Le bénéfice de Docker par rapport aux VM 
+        Plus leger en ressources.
+
+- La pertinence de la structure de répertoires requise pour ce projet (un exemple est fourni dans le fichier PDF du sujet).
+        L'arborescence est logique, un peu comme une arborescence reelle.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+Configuration simple
+- Assurez-vous que NGINX est accessible uniquement par le port 443. Une fois terminé, ouvrez la page.
+
+- Assurez-vous qu'un certificat SSL/TLS est utilisé.
+
+- Assurez-vous que le site Web WordPress est correctement installé et configuré (vous ne devriez pas voir la page d'installation de WordPress).
+  Pour y accéder, ouvrez https://login.42.fr dans votre navigateur, où login est le login de l'étudiant évalué.
+  Vous ne devriez pas pouvoir accéder au site via http://login.42.fr.
+  Si quelque chose ne fonctionne pas comme prévu, le processus d'évaluation se termine maintenant.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+Les bases de Docker
+- Commencez par vérifier les Dockerfiles.
+  Il doit y avoir un Dockerfile par service.
+  Assurez-vous que les Dockerfiles ne sont pas des fichiers vides.
+  Si ce n'est pas le cas ou s'il manque un Dockerfile, le processus d'évaluation se termine maintenant.
+
+- Assurez-vous que l'étudiant évalué a écrit ses propres Dockerfiles et construit ses propres images Docker.
+  En effet, il est interdit d'en utiliser des tout faits ou d'utiliser des services tels que DockerHub.
+
+- Assurez-vous que chaque conteneur est construit à partir de l'avant-dernière version stable d'Alpine Linux ou de Debian Buster.
+  Si un Dockerfile ne commence pas par 'FROM alpine' ou 'FROM debian:buster', ou toute autre image locale, le processus d'évaluation se termine maintenant.
+
+- Les images Docker doivent avoir le même nom que leur service correspondant.
+  Sinon, le processus d'évaluation se termine maintenant.
+
+- Assurez-vous que le Makefile a configuré tous les services via docker-compose.
+  Cela signifie que les conteneurs doivent avoir été construits à l'aide de docker-compose et qu'aucun crash ne s'est produit.
+  Sinon, le processus d'évaluation se termine.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+Réseau Docker
+- Assurez-vous que docker-network est utilisé en vérifiant le docker-compose.yaml.
+  Exécutez ensuite la commande 'docker network ls' pour vérifier qu'un réseau est visible.
+
+- L'étudiant évalué doit vous donner une explication simple de docker-network.
+  Si l'un des points ci-dessus n'est pas correct, le processus d'évaluation se termine maintenant.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+NGINX avec SSL/TLS
+- Assurez-vous qu'il existe un Dockerfile.
+
+- A l'aide de la commande 'docker-compose ps', assurez-vous que le conteneur a bien été créé (l'utilisation du flag '-p' est autorisée si nécessaire).
+
+- Essayez d'accéder au service via http (port 80) et vérifiez que vous ne pouvez pas vous connecter.
+
+- Ouvrez https://login.42.fr/ dans votre navigateur, où login est le login de l'étudiant évalué.
+  La page affichée doit être le site Web WordPress configuré (vous ne devriez pas voir la page d'installation de WordPress).
+
+- L'utilisation d'un certificat TLS v1.2/v1.3 est obligatoire et doit être démontrée.
+  Le certificat SSL/TLS n'a pas besoin d'être reconnu.
+  Un avertissement de certificat auto-signé peut apparaître.
+  Si l'un des points ci-dessus n'est pas clairement expliqué et correct, le processus d'évaluation se termine maintenant.
+
+(TLS est un protocole de securite dans l'envoi de message)
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+WordPress avec php-fpm et son volume
+- Assurez-vous qu'il existe un Dockerfile.
+
+- Assurez-vous qu'il n'y a pas de NGINX dans le Dockerfile.
+
+- A l'aide de la commande 'docker-compose ps', assurez-vous que le conteneur a bien été créé (l'utilisation du flag '-p' est autorisée si nécessaire). 
+
+- Assurez-vous qu'il y a un volume.
+  Pour cela : Exécutez la commande 'docker volume ls' puis 'docker volume inspect'.
+  Vérifiez que le résultat dans la sortie standard contient le chemin '/home/login/data/', où login est le login de l'étudiant évalué.
+
+- Assurez-vous que vous pouvez ajouter un commentaire en utilisant l'utilisateur WordPress disponible.
+
+- Connectez-vous avec le compte administrateur pour accéder au tableau de bord d'administration.
+  Le nom d'utilisateur de l'administrateur ne doit pas inclure « admin » ou « Admin » (par exemple, admin, administrator, Admin-login, admin-123, etc.).
+  (/wp-admin)
+
+- Depuis le tableau de bord Administration, modifiez une page.
+  Vérifiez sur le site Web que la page a été mise à jour.
+  Si l'un des points ci-dessus n'est pas correct, le processus d'évaluation se termine maintenant.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+MariaDB et son volume
+- Assurez-vous qu'il existe un Dockerfile.
+
+- Assurez-vous qu'il n'y a pas de NGINX dans le Dockerfile.
+
+- A l'aide de la commande 'docker-compose ps', assurez-vous que le conteneur a bien été créé (l'utilisation du flag '-p' est autorisée si nécessaire).
+
+- Assurez-vous qu'il y a un volume.
+  Pour cela : Exécutez la commande 'docker volume ls' puis 'docker volume inspect'.
+  Vérifiez que le résultat dans la sortie standard contient le chemin '/home/login/data/', où login est le login de l'étudiant évalué.
+
+- L'étudiant évalué doit être en mesure de vous expliquer comment vous connecter à la base de données.
+  Essayez de vous connecter à la base de données SQL en tant que root mais sans mot de passe.
+  Si la connexion réussit, le processus d'évaluation se termine maintenant.
+
+- Essayez de vous connecter à la base de données SQL avec le compte utilisateur et son mot de passe.
+  Vérifiez que la base de données n'est pas vide.
+  Si l'un des points ci-dessus n'est pas correct, le processus d'évaluation se termine maintenant.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+Persistance!
+- Cette partie est assez simple.
+  Vous devez redémarrer la machine virtuelle.
+  Une fois redémarré, relancez docker-compose.
+  Ensuite, vérifiez que tout est fonctionnel et que WordPress et MariaDB sont configurés.
+  Les modifications que vous avez apportées précédemment au site Web WordPress devraient toujours être présentes.
+  Si l'un des points ci-dessus n'est pas correct, le processus d'évaluation se termine maintenant.

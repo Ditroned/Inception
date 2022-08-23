@@ -11,6 +11,9 @@ all		:
 			sudo echo "127.0.0.1 www.ppizzo.42.fr" >> /etc/hosts
 			$(COMPOSE) up -d
 
+clean	:
+			$(COMPOSE) down -v --rmi all --remove-orphans
+
 fclean	:	clean
 			$(DOCKER) system prune --volumes --all --force
 			sudo rm -rf $(DATA_PATH)

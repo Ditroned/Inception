@@ -7,3 +7,4 @@ sudo apt instal docker-compose
 clean	:
 			$(COMPOSE) down -v --rmi all --remove-orphans
 			sudo docker exec -it [container_name] mysql bash -u ppizzo -p ppizzo_pwd
+git@vogsphere-v2.s19.be:vogsphere/intra-uuid-ef0f599e-872d-478e-b6d7-e875150e8e4e-4132230-ppizzo

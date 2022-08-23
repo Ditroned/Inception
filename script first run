@@ -6,4 +6,4 @@ sudo sh get-docker.sh
 sudo apt instal docker-compose
 clean	:
 			$(COMPOSE) down -v --rmi all --remove-orphans
-			sudo docker exec -it [container_name] bash
+			sudo docker exec -it [container_name] mysql bash -u ppizzo -p ppizzo_pwd
